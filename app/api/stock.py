@@ -217,7 +217,7 @@ async def get_stock_info(symbol: Optional[str] = "ACB"):
     save_stock_price(payload_stock_price)
     save_shareholders(payload_shareholders, symbol)
 
-    return "Saved"
+    return f'Saved stock: {symbol}'
 
 
 @api_router.post("/stock")
@@ -233,6 +233,4 @@ async def get_stock_info(symbols: SymbolList):
         save_stock_price(payload_stock_price)
         save_shareholders(payload_shareholders, s)
 
-    s = "Saved" + str(symbols.symbols)
-
-    return s
+    return f'Saved + {str(symbols.symbols)}'
