@@ -1,5 +1,4 @@
 from fastapi import APIRouter
-from bson.objectid import ObjectId
 from datetime import date, timedelta
 from typing import Optional
 from ..database.connection import collection_holidays
