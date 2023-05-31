@@ -5,6 +5,7 @@ from typing import Optional
 from ..database.connection import *
 from ..model.stock import *
 import json
+from bs4 import BeautifulSoup
 
 api_router = APIRouter()
 url = "https://finfo-iboard.ssi.com.vn/graphql"
@@ -177,6 +178,9 @@ def save_company_profile(payload):
         p = data["data"]["companyProfile"]
         s = data["data"]["companyStatistics"]
         profile = CompanyProfile(**p)
+        soup = BeautifulSoup(profile.companyprofile, 'html.parser')
+        div_text = soup.div.get_text()
+        profile.companyprofile = div_text.strip()
         filter_query = {'symbol': p['symbol']}
         update_data = {'$set': profile.dict()}
         collection_companyProfile.update_one(filter_query, update_data, upsert=True)
@@ -206,7 +210,7 @@ def save_similar_industry_companies(payload, symbol):
 
 
 @api_router.get("/stock")
-async def get_stock_info(symbol: Optional[str] = "ACB"):
+async def save_stock_info(symbol: Optional[str] = "ACB"):
     payload_sub_companies, payload_shareholders, payload_leaderships, payload_stock_price, \
         payload_company_profile, payload_similar_industry_companies = parseSymbol(symbol)
 
@@ -234,3 +238,41 @@ async def get_stock_info(symbols: SymbolList):
         save_shareholders(payload_shareholders, s)
 
     return f'Saved + {str(symbols.symbols)}'
+
+
+@api_router.get("/stock_info/{symbol}")
+async def get_stock_info(symbol):
+    shareholders = []
+    sm_companies = []
+    leaderships = []
+    company_profile_data = collection_companyProfile.find_one({'symbol': symbol}, {'_id': 0})
+    company_stat_data = collection_companyStat.find_one({'symbol': symbol}, {'_id': 0})
+
+    for s in collection_shareholder.find({'company': symbol}, {'_id': 0}):
+        shareholders.append(s)
+    for c in collection_similarIndustryCompanies.find({'relatingcompany': symbol}, {'_id': 0}):
+        sm_companies.append(c)
+    for l in collection_leadership.find({'symbol': symbol}, {'_id': 0}):
+        leaderships.append(l)
+
+    resp = {
+        'symbol': symbol,
+        'profile': company_profile_data,
+        'stat': company_stat_data,
+        'similar_industry_companies': sm_companies,
+        'leaderships': leaderships,
+        'shareholders': shareholders
+    }
+    return {'data': resp}
+
+
+@api_router.get("/trading_history/{symbol}")
+async def get_trading_history(symbol):
+    stock_price = []
+    for s in collection_stockPrice.find({'symbol': symbol}, {'_id': 0}):
+        stock_price.append(s)
+    resp = {
+        'symbol': symbol,
+        'stock_price': stock_price
+    }
+    return {'data': resp}
