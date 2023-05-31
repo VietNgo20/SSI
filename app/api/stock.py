@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 import requests
-from datetime import date, timedelta, datetime
+from datetime import date, timedelta
 from typing import Optional
 from ..database.connection import *
 from ..model.stock import *
@@ -320,7 +320,6 @@ async def get_trading_history(date_req: Date):
     last_thursday_in_year = get_third_thursday(date_req.year, 12)
 
     if date_input > last_thursday_in_year:
-        day = 1
         month = 1
         year += 1
 
@@ -334,8 +333,6 @@ async def get_trading_history(date_req: Date):
     this_quarter = get_quarter(month)
     this_quarter_dl = get_third_thursday(year, quarters[this_quarter])
 
-    next_month_dl = None
-    next_quarter_dl = None
     if month == 12 or (month == 12 and this_quarter == 3):
         next_month_dl = get_third_thursday(year, 1)
         next_quarter_dl = get_third_thursday(year + 1, quarters[0])
@@ -370,7 +367,3 @@ async def get_trading_history(date_req: Date):
     ]}
 
     return resp
-
-
-
-
