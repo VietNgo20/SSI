@@ -19,6 +19,5 @@
             "code": "VN30F1M",
             "expired_date": "15/06/2023"
         }
-
-## 1/6: Plan
     - Containerize app bằng Docker
+    
