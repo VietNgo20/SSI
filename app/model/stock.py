@@ -125,6 +125,12 @@ class StockPrice(BaseModel):
     foreignbuyvolmatched: str
     foreignbuyvoldeal: str
 
+
+class Date(BaseModel):
+    day: int
+    month: int
+    year: int
+
 # class About(BaseModel):
 #     symbol: str
 #     company_profile: CompanyProfile

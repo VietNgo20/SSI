@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 import requests
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
 from typing import Optional
 from ..database.connection import *
 from ..model.stock import *
@@ -9,6 +9,8 @@ from bs4 import BeautifulSoup
 
 api_router = APIRouter()
 url = "https://finfo-iboard.ssi.com.vn/graphql"
+
+quarters = [3, 6, 9, 12]
 
 headers = {
     'authority': 'finfo-iboard.ssi.com.vn',
@@ -276,3 +278,99 @@ async def get_trading_history(symbol):
         'stock_price': stock_price
     }
     return {'data': resp}
+
+
+def get_third_thursday(year, month):
+    first_day = date(year, month, 1)
+    weekday = first_day.weekday()
+    days_to_thursday = (3 - weekday + 7) % 7
+    third_thursday = first_day + timedelta(days=days_to_thursday + 7 * 2)
+    return third_thursday
+
+
+def get_quarter(month):
+    if month in range(1, 4):
+        return 0
+    elif month in range(4, 7):
+        return 1
+    elif month in range(7, 10):
+        return 2
+    elif month in range(10, 13):
+        return 3
+
+
+def is_valid_date(year, month, day):
+    try:
+        date(year, month, day)
+        return True
+    except ValueError:
+        return False
+
+
+@api_router.post("/derivative_code")
+async def get_trading_history(date_req: Date):
+    year = int(date_req.year)
+    month = int(date_req.month)
+    day = int(date_req.day)
+    valid = is_valid_date(year, month, day)
+    if not valid:
+        return {"error": "Invalid date"}
+
+    date_input = date(year, month, day)
+    last_thursday_in_year = get_third_thursday(date_req.year, 12)
+
+    if date_input > last_thursday_in_year:
+        day = 1
+        month = 1
+        year += 1
+
+    str_month_year = date_input.strftime("%y%m")
+    symbol = f'VN30F{str_month_year}'
+
+    this_month_dl = get_third_thursday(year, month)
+    if date_input >= this_month_dl:
+        month += 1
+        this_month_dl = get_third_thursday(year, month)
+    this_quarter = get_quarter(month)
+    this_quarter_dl = get_third_thursday(year, quarters[this_quarter])
+
+    next_month_dl = None
+    next_quarter_dl = None
+    if month == 12 or (month == 12 and this_quarter == 3):
+        next_month_dl = get_third_thursday(year, 1)
+        next_quarter_dl = get_third_thursday(year + 1, quarters[0])
+    elif 10 <= month <= 12:
+        next_month_dl = get_third_thursday(year, int(month) + 1)
+        next_quarter_dl = get_third_thursday(year + 1, quarters[0])
+    else:
+        next_month_dl = get_third_thursday(year, int(month) + 1)
+        next_quarter_dl = get_third_thursday(year, quarters[this_quarter + 1])
+
+    resp = {"data": [
+        {
+            "symbol": symbol,
+            "code": "VN30F1M",
+            "expired_date": this_month_dl.strftime("%d/%m/%Y")
+        },
+        {
+            "symbol": symbol,
+            "code": "VN30F2M",
+            "expired_date": next_month_dl.strftime("%d/%m/%Y")
+        },
+        {
+            "symbol": symbol,
+            "code": "VN30F1Q",
+            "expired_date": this_quarter_dl.strftime("%d/%m/%Y")
+        },
+        {
+            "symbol": symbol,
+            "code": "VN30F2Q",
+            "expired_date": next_quarter_dl.strftime("%d/%m/%Y")
+        },
+    ]}
+
+    return resp
+
+
+
+
