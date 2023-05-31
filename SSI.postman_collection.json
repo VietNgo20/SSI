@@ -1,0 +1,183 @@
+{
+	"info": {
+		"_postman_id": "65f928b7-d24f-456b-aefc-0a6fcded6b5e",
+		"name": "SSI",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create Holiday",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"Giai phong Mièn Nam\",\n    \"day\": 30,\n    \"month\": 4\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8001/new_holiday",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8001",
+					"path": [
+						"new_holiday"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Derivative Code",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"year\": 2023,\n    \"day\": 20,\n    \"month\": 10\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/derivative_code",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"derivative_code"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Multiple Stock",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"symbols\" : [\"ACB\", \"VCB\"]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/stock",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"stock"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Stock",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8001/stock?symbol=ACB",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8001",
+					"path": [
+						"stock"
+					],
+					"query": [
+						{
+							"key": "symbol",
+							"value": "ACB"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Stock Info",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8001/stock_info/FPT",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8001",
+					"path": [
+						"stock_info",
+						"FPT"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Trading history",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/trading_history/FPT",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"trading_history",
+						"FPT"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Holidays",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/holidays?year=2022",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"holidays"
+					],
+					"query": [
+						{
+							"key": "year",
+							"value": "2022"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
