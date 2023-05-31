@@ -336,7 +336,7 @@ async def get_trading_history(date_req: Date):
     if month == 12 or (month == 12 and this_quarter == 3):
         next_month_dl = get_third_thursday(year, 1)
         next_quarter_dl = get_third_thursday(year + 1, quarters[0])
-    elif 10 <= month <= 12:
+    elif 10 <= month < 12:
         next_month_dl = get_third_thursday(year, int(month) + 1)
         next_quarter_dl = get_third_thursday(year + 1, quarters[0])
     else:

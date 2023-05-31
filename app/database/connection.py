@@ -1,6 +1,6 @@
 from pymongo import MongoClient
 
-client = MongoClient("mongodb://localhost:27017/")
+client = MongoClient("mongodb://mongodb")
 db = client["calendar"]
 collection_holidays = db["holiday"]
 ssi_db = client["SSI"]

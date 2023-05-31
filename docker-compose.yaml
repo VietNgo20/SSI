@@ -1,10 +1,28 @@
 version: "3.8"
 
 services:
+  mongodb:
+    container_name: mongodb
+    image: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./data:/data/db
+
   app:
-    build: .
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    container_name: ssi_app
     env_file:
       - .env
     ports:
       - "8000:8000"
+    depends_on:
+      - mongodb
+
+networks:
+  default:
+    name: ssi
+    external: true
 
