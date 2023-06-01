@@ -20,7 +20,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8001/new_holiday",
+					"raw": "http://localhost:8000/new_holiday",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -95,7 +95,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8001/stock?symbol=ACB",
+					"raw": "http://localhost:8000/stock?symbol=ACB",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -120,7 +120,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8001/stock_info/FPT",
+					"raw": "http://localhost:8000/stock_info/FPT",
 					"protocol": "http",
 					"host": [
 						"localhost"
